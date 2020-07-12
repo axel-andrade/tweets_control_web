@@ -4,6 +4,10 @@ const formatSearchQueryParam = searchText => {
             searchText = searchText.substr(1)
             return `hashtag=${searchText}`
         }
+        if(searchText.startsWith('@')){
+            searchText = searchText.substr(1)
+            return `text=${searchText}`
+        }
     }
     return `text=${searchText}`
 }

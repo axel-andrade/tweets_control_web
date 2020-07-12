@@ -1,38 +1,52 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Avatar, List, Space, Layout, Button} from 'antd';
 import {FundProjectionScreenOutlined, RetweetOutlined, HeartFilled} from '@ant-design/icons';
 import {formatDate} from '../utils/helpers';
 import ModalConfirm from './modal-confirm';
+import {
+    CSSTransition,
+    TransitionGroup,
+} from 'react-transition-group';
 
 const {Footer} = Layout;
 
-export default function TweetList({data, searchText}) {
+export default function TweetList({data, searchText, removeTweetOfList}) {
     const [openModal, setOpenModal] = useState(false);
     const [tweetSelected, setTweetSelected] = useState(null);
 
-    async function closeModal() {
+    async function closeModal(id) {
         setTweetSelected(null);
         setOpenModal(false);
+        if(id){
+            removeTweetOfList(id)
+        }
     }
 
     async function handleOpenModal(item) {
-        setTweetSelected(item)
+        setTweetSelected(item);
         setOpenModal(true);
     }
 
     return (
         <div>
-            <ModalConfirm tweet={tweetSelected} searchText={searchText} visible={openModal} closeModal={closeModal}/>
-
-            <List
-                itemLayout="horizontal"
-                size="large"
-                dataSource={data}
-                renderItem={item => (
-                    <Layout style={{width: '800', marginBottom: '5%'}}>
+            <ModalConfirm
+                tweet={tweetSelected}
+                searchText={searchText}
+                visible={openModal}
+                closeModal={closeModal}
+            />
+            <TransitionGroup>
+            {data.map((item, index) => (
+                <CSSTransition
+                    key={item.id}
+                    timeout={500}
+                    classNames="item"
+                >
+                    <Layout style={{width: '800',marginBottom: '5%'}}>
                         <List.Item
+                            className="remove-btn"
                             key={item.id_str}
-                            style={{marginTop: 10, marginBottom: 10}}
+                            style={{marginTop: 10, marginBottom: 10, marginLeft: 20}}
                             onClick={() => handleOpenModal(item)}
                         >
                             <List.Item.Meta
@@ -61,9 +75,9 @@ export default function TweetList({data, searchText}) {
                             </Layout>
                         </Footer>
                     </Layout>
-
-                )}
-            />
+                </CSSTransition>
+            ))}
+            </TransitionGroup>
         </div>
     );
 }

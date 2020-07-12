@@ -2,6 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Layout, Input, Empty, Spin, Switch, Space} from 'antd';
 import TweetList from '../components/tweet-list'
 import api from '../services/api';
+import {
+    CSSTransition,
+    TransitionGroup,
+} from 'react-transition-group';
+
 import socketIOClient from 'socket.io-client'
 import { formatSearchQueryParam } from '../utils/helpers';
 const { Search } = Input;
@@ -36,6 +41,11 @@ export default function Main({history}) {
     useEffect(() => {
         loadTweets()
     }, []);
+
+
+    async function removeTweetOfList(id){
+        setTweets(tweets.filter( tweet => tweet.id !== id))
+    }
 
     async function getTweetsByText(value) {
         if (value) {
@@ -138,7 +148,7 @@ export default function Main({history}) {
             </h4>
 
             {tweets.length > 0 ?
-                <TweetList data={tweets} searchText={search}/>
+                <TweetList data={tweets} searchText={search} removeTweetOfList={removeTweetOfList}/>
                 : loading
                     ? null
                     : EmptyResult

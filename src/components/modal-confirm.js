@@ -11,7 +11,8 @@ export default function ModalConfirm({tweet, searchText, visible, closeModal}) {
                 tweet
             });
             OpenNotificationWithIcon('success', 'Tweet adicionado com sucesso.');
-            closeModal();
+            closeModal(tweet.id);
+
         } catch (e) {
             OpenNotificationWithIcon('error', 'Erro ao adicionar este tweet.');
         }
